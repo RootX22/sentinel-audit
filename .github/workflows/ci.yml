@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Lint all shell sources
+        run: shellcheck -x sentinel.sh lib/*.sh checks/*.sh
+
+  smoke:
+    name: Smoke test (${{ matrix.privilege }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        privilege: [user, root]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run audit
+        id: audit
+        run: |
+          chmod +x sentinel.sh
+          if [ "${{ matrix.privilege }}" = "root" ]; then
+            sudo ./sentinel.sh --format json > audit.json || true
+          else
+            ./sentinel.sh --format json > audit.json || true
+          fi
+
+      - name: Assert the report is valid JSON
+        run: jq empty audit.json
+
+      - name: Assert checks actually ran
+        run: |
+          total=$(jq '.summary.pass + .summary.fail + .summary.warn' audit.json)
+          echo "Checks evaluated: $total"
+          [ "$total" -gt 10 ] || { echo "Too few checks ran — modules may not be loading"; exit 1; }
+
+      - name: Assert unprivileged runs report skips honestly
+        if: matrix.privilege == 'user'
+        run: |
+          skips=$(jq '.summary.skip' audit.json)
+          [ "$skips" -gt 0 ] || { echo "Expected privileged checks to be skipped as non-root"; exit 1; }
+
+      - name: Summary
+        run: jq -r '.summary | "pass=\(.pass) fail=\(.fail) warn=\(.warn) skip=\(.skip)"' audit.json

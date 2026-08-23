@@ -1,0 +1,41 @@
+name: Wrong check result
+description: A check passed something insecure, or failed something fine
+labels: [false-result]
+body:
+  - type: input
+    id: check_id
+    attributes:
+      label: Check ID
+      placeholder: "SSH-002, NET-003, DOC-001 ..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Which way is it wrong
+      options:
+        - Passed a configuration that is actually insecure
+        - Failed a configuration that is actually fine
+        - Skipped when it should have run
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: The relevant configuration
+      description: The config lines, permissions, or command output the check looks at.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why the result is wrong
+      description: >
+        For a false pass especially, what does an attacker actually get?
+        A false pass is treated as a security issue - see SECURITY.md.
+    validations:
+      required: true

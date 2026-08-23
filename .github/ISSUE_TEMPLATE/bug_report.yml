@@ -1,0 +1,45 @@
+name: Bug report
+description: Something behaves differently than documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the exact command you ran and its output.
+      placeholder: |
+        $ sudo ./sentinel.sh --only ssh
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS and version
+      placeholder: "Ubuntu 24.04 / Debian 12 / Alpine 3.20"
+    validations:
+      required: true
+
+  - type: input
+    id: bash
+    attributes:
+      label: Bash version
+      description: "Output of: bash --version | head -1"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privilege
+    attributes:
+      label: Ran as
+      options:
+        - label: root / sudo
+        - label: unprivileged user

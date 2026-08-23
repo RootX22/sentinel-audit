@@ -1,10 +1,16 @@
 # sentinel-audit
 
-A dependency-free Linux server hardening auditor in pure Bash. Point it at a
+[![CI](https://github.com/RootX22/sentinel-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/RootX22/sentinel-audit/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/RootX22/sentinel-audit?color=36BCF7)](https://github.com/RootX22/sentinel-audit/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-0e75b6.svg)](LICENSE)
+![Shell: Bash](https://img.shields.io/badge/shell-bash%204%2B-4EAA25?logo=gnubash&logoColor=white)
+![Dependencies: none](https://img.shields.io/badge/dependencies-none-5ee1a0)
+
+A dependency-free Linux server hardening auditor in pure Bash. 34 read-only checks. Point it at a
 freshly-provisioned box and it tells you what an attacker would find first.
 
 ```
-sentinel-audit 1.0.0  2026-08-23T16:19:06Z
+sentinel-audit 1.1.0  2026-08-24T09:14:22Z
 host: web-01   os: Ubuntu 24.04.1 LTS   privilege: root
 
 ▸ SSH
@@ -78,6 +84,7 @@ sudo ./sentinel.sh                   # includes root-only checks
 | `30-accounts` | `ACC-00x` | Extra UID 0 accounts, empty passwords, system accounts with login shells, password ageing, passwordless sudo, `authorized_keys` permissions |
 | `40-network` | `NET-00x` | Sockets bound to `0.0.0.0`, exposed data services, firewall presence, IP forwarding, kernel network flags |
 | `50-secrets` | `SEC-00x` | World-readable `.env` files, private keys under web roots, API tokens in shell history, passphrase-less SSH keys |
+| `60-docker` | `DOC-00x` | Daemon socket permissions and group membership, daemon on TCP, privileged containers, containers mounting `docker.sock` or running as root, unrestricted inter-container traffic |
 
 Findings are graded three ways, and the distinction matters:
 

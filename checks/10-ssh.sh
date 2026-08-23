@@ -10,6 +10,9 @@ section "SSH"
 
 if [[ ! -f /etc/ssh/sshd_config ]]; then
     skip SSH-000 "SSH daemon configuration" "no sshd_config on this host"
+    # The runner sources this file, so `return` bails out of the module without
+    # killing the audit. The `exit` fallback covers running the module directly.
+    # shellcheck disable=SC2317  # reachable via source; shellcheck cannot see that
     return 0 2>/dev/null || exit 0
 fi
 

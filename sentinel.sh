@@ -20,7 +20,8 @@
 set -uo pipefail
 
 readonly SENTINEL_VERSION="1.0.0"
-readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
 readonly CHECK_DIR="$SCRIPT_DIR/checks"
 
 SENTINEL_FORMAT="text"
